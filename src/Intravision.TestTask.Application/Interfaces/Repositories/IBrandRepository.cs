@@ -1,6 +1,6 @@
 ﻿using Intravision.TestTask.Domain.Entities;
 
-namespace Intravision.TestTask.Application.Interfaces;
+namespace Intravision.TestTask.Application.Interfaces.Repositories;
 
 public interface IBrandRepository
 {

@@ -1,3 +1,3 @@
 ﻿namespace Intravision.TestTask.Application.Features.Orders.Commands;
 
-public record OrderItemRequest();
+public record OrderItemRequest(Guid ProductId, int Quantity);

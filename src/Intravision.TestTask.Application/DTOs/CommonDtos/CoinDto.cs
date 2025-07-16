@@ -1,4 +1,4 @@
-﻿namespace Intravision.TestTask.Application.DTOs;
+﻿namespace Intravision.TestTask.Application.DTOs.CommonDtos;
 
 public record CoinDto(
     decimal Denomination,

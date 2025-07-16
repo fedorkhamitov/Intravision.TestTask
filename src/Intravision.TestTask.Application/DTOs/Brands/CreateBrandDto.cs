@@ -1,3 +1,3 @@
-﻿namespace Intravision.TestTask.Application.DTOs;
+﻿namespace Intravision.TestTask.Application.DTOs.Brands;
 
-public record CreateBrandDto();
+public record CreateBrandDto(string Name, string Description);

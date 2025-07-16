@@ -1,3 +1,3 @@
-﻿namespace Intravision.TestTask.Application.DTOs;
+﻿namespace Intravision.TestTask.Application.DTOs.Orders;
 
-public record OrderItemRequestDto();
+public record OrderItemRequestDto(Guid ProductId, int Quantity);

@@ -1,4 +1,4 @@
-﻿namespace Intravision.TestTask.Application.DTOs;
+﻿namespace Intravision.TestTask.Application.DTOs.Products;
 
 public record CreateProductDto(
     string Name,

@@ -1,4 +1,4 @@
-﻿namespace Intravision.TestTask.Application.DTOs;
+﻿namespace Intravision.TestTask.Application.DTOs.Brands;
 
 public record BrandDto(
     Guid Id,

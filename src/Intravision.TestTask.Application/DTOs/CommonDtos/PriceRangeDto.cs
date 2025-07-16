@@ -1,3 +1,3 @@
-﻿namespace Intravision.TestTask.Application.DTOs;
+﻿namespace Intravision.TestTask.Application.DTOs.CommonDtos;
 
-public record PriceRangeDto();
+public record PriceRangeDto(decimal MinPrice, decimal MaxPrice);

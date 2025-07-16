@@ -1,3 +1,6 @@
-﻿namespace Intravision.TestTask.Application.DTOs;
+﻿namespace Intravision.TestTask.Application.DTOs.Orders;
 
-public record OrderResultDto();
+public record OrderResultDto(
+    OrderDto Order,
+    IReadOnlyDictionary<decimal, int> Change,
+    string Message);
