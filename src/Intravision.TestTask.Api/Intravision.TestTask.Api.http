@@ -1,0 +1,6 @@
+@Intravision.TestTask.Api_HostAddress = http://localhost:5017
+
+GET {{Intravision.TestTask.Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
