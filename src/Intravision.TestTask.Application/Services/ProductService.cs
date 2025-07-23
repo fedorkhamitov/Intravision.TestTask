@@ -12,7 +12,7 @@ public class ProductService : IProductService
 {
     private readonly IProductRepository _productRepository;
     private readonly IBrandRepository _brandRepository;
-    
+    private const string ProductImagesBasePath = "/images/products/";
     public ProductService(IProductRepository productRepository, IBrandRepository brandRepository)
     {
         _productRepository = productRepository;
@@ -38,7 +38,8 @@ public class ProductService : IProductService
             p.Price.Currency,
             p.StockQuantity,
             p.BrandId,
-            brandDict.GetValueOrDefault(p.BrandId, "Unknown")
+            brandDict.GetValueOrDefault(p.BrandId, "Unknown"),
+            p.ImageFileName != null ? ProductImagesBasePath + p.ImageFileName : null
         ));
     }
 
@@ -57,8 +58,8 @@ public class ProductService : IProductService
             product.Price.Currency,
             product.StockQuantity,
             product.BrandId,
-            brand?.Name ?? "Unknown"
-        );
+            brand?.Name ?? "Unknown",
+            product.ImageFileName != null ? ProductImagesBasePath + product.ImageFileName : null);
     }
 
     public async Task<ProductDto> CreateProductAsync(CreateProductDto dto)
@@ -85,8 +86,8 @@ public class ProductService : IProductService
             product.Price.Currency,
             product.StockQuantity,
             product.BrandId,
-            brand.Name
-        );
+            brand.Name,
+            product.ImageFileName != null ? ProductImagesBasePath + product.ImageFileName : null);
     }
 
     public async Task<ProductDto> UpdateProductAsync(Guid id, UpdateProductDto dto)
@@ -97,6 +98,7 @@ public class ProductService : IProductService
 
         product.UpdatePrice(new Money(dto.Price));
         product.UpdateStock(dto.StockQuantity);
+        product.SetImageFileName(dto.ImageFileName);
 
         await _productRepository.UpdateAsync(product);
 
@@ -110,8 +112,8 @@ public class ProductService : IProductService
             product.Price.Currency,
             product.StockQuantity,
             product.BrandId,
-            brand?.Name ?? "Unknown"
-        );
+            brand?.Name ?? "Unknown",
+            product.ImageFileName != null ? ProductImagesBasePath + product.ImageFileName : null);
     }
 
     public async Task DeleteProductAsync(Guid id)

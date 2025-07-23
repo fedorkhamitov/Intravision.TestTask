@@ -37,15 +37,15 @@ public static class DataSeed
             
             var products = new[]
             {
-                new Product("Coca-Cola", "Классическая кола", new Money(85), cocaCola.Id, 10),
-                new Product("Coca-Cola Zero", "Кола без сахара", new Money(85), cocaCola.Id, 8),
-                new Product("Pepsi Cola", "Пепси кола", new Money(70), pepsi.Id, 12),
-                new Product("Pepsi Max", "Пепси без сахара", new Money(70), pepsi.Id, 7),
-                new Product("Fanta Orange", "Апельсиновая фанта", new Money(75), fanta.Id, 15),
-                new Product("Fanta Grape", "Виноградная фанта", new Money(75), fanta.Id, 9),
-                new Product("Sprite", "Лимонно-лаймовая газировка", new Money(70), sprite.Id, 11),
-                new Product("Sprite Zero", "Спрайт без сахара", new Money(70), sprite.Id, 6),
-                new Product("Dr. Pepper", "Доктор Пеппер", new Money(100), drpepper.Id, 5)
+                new Product("Coca-Cola", "Классическая кола", new Money(85), cocaCola.Id, 10, "coca_cola_classic.jpg"),
+                new Product("Coca-Cola Zero", "Кола без сахара", new Money(85), cocaCola.Id, 8, "coca_cola_zero.jpg"),
+                new Product("Pepsi Cola", "Пепси кола", new Money(70), pepsi.Id, 12, "pepsi_cola.jpg"),
+                new Product("Pepsi Max", "Пепси без сахара", new Money(70), pepsi.Id, 7, "pepsi_max.jpg"),
+                new Product("Fanta Orange", "Апельсиновая фанта", new Money(75), fanta.Id, 15, "fanta_orange.jpg"),
+                new Product("Fanta Grape", "Виноградная фанта", new Money(75), fanta.Id, 9, "fanta_grape.jpg"),
+                new Product("Sprite", "Лимонно-лаймовая газировка", new Money(70), sprite.Id, 11, "sprite.jpg"),
+                new Product("Sprite Zero", "Спрайт без сахара", new Money(70), sprite.Id, 6, "sprite_zero.jpg"),
+                new Product("Dr. Pepper", "Доктор Пеппер", new Money(100), drpepper.Id, 5, "sprite_lime.jpg")
             };
 
             context.Products.AddRange(products);

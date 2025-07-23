@@ -8,7 +8,8 @@ public record ProductDto(
     string Currency,
     int StockQuantity,
     Guid BrandId,
-    string BrandName)
+    string BrandName,
+    string? ImageUrl)
 {
     public bool IsInStock => StockQuantity > 0;
 }

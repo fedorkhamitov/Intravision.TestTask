@@ -21,12 +21,18 @@ public class Order : Entity
         _items = [];
     }
     
-    public void AddItem(Guid productId, Guid brandId, int quantity, Money unitPrice)
+    public void AddItem(
+        Guid productId, 
+        string productName,
+        Guid brandId,
+        string brandName,
+        int quantity, 
+        Money unitPrice)
     {
         if (quantity <= 0)
             throw new ArgumentException("Количество должно быть положительным");
         
-        var orderItem = new OrderItem(productId, brandId, quantity, unitPrice);
+        var orderItem = new OrderItem(productId, productName, brandId, brandName, quantity, unitPrice);
         _items.Add(orderItem);
         
         RecalculateTotal();

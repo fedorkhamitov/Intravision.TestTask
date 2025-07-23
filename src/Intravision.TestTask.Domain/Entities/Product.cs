@@ -11,11 +11,20 @@ public class Product : Entity
     public int StockQuantity { get; private set; }
     public Guid BrandId { get; private set; }
     
+    public string? ImageFileName { get; private set; }
+
+    
     public bool IsInStock => StockQuantity > 0;
     
     private Product() { } // Для EF Core
     
-    public Product(string name, string description, Money price, Guid brandId, int stockQuantity)
+    public Product(
+        string name, 
+        string description, 
+        Money price, 
+        Guid brandId, 
+        int stockQuantity,
+        string? imageFileName = null)
     {
         Id = Guid.NewGuid();
         Name = name ?? throw new ArgumentNullException(nameof(name));
@@ -23,6 +32,7 @@ public class Product : Entity
         Price = price ?? throw new ArgumentNullException(nameof(price));
         BrandId = brandId;
         StockQuantity = stockQuantity;
+        ImageFileName = imageFileName;
     }
     
     public void UpdatePrice(Money newPrice)
@@ -46,5 +56,10 @@ public class Product : Entity
             throw new ArgumentException("Количество добавленных не может быть отрицательным");
         
         StockQuantity += quantity;
+    }
+    
+    public void SetImageFileName(string? fileName)
+    {
+        ImageFileName = fileName;
     }
 }

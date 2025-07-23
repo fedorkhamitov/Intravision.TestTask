@@ -12,22 +12,24 @@ public class OrderService : IOrderService
     private readonly IProductRepository _productRepository;
     private readonly IBrandRepository _brandRepository;
     private readonly ICoinRepository _coinRepository;
+    private readonly ChangeCalculator _changeCalculator;
 
     public OrderService(
         IOrderRepository orderRepository,
         IProductRepository productRepository,
         IBrandRepository brandRepository,
-        ICoinRepository coinRepository)
+        ICoinRepository coinRepository,
+        ChangeCalculator changeCalculator)
     {
         _orderRepository = orderRepository;
         _productRepository = productRepository;
         _brandRepository = brandRepository;
         _coinRepository = coinRepository;
+        _changeCalculator = changeCalculator;
     }
     
     public async Task<OrderResultDto> CreateOrderAsync(CreateOrderDto dto)
     {
-        // Валидация товаров
         var products = new List<Product>();
         foreach (var item in dto.Items)
         {
@@ -41,33 +43,40 @@ public class OrderService : IOrderService
             products.Add(product);
         }
 
-        // Создание заказа
         var order = new Order(DateTime.UtcNow);
         
         foreach (var item in dto.Items)
         {
             var product = products.First(p => p.Id == item.ProductId);
-            order.AddItem(product.Id, product.BrandId, item.Quantity, product.Price);
+            var brand = await _brandRepository.GetByIdAsync(product.BrandId);
+    
+            order.AddItem(
+                product.Id,
+                product.Name,
+                product.BrandId,
+                brand?.Name ?? "Unknown Brand",
+                item.Quantity,
+                product.Price);
         }
 
-        // Валидация оплаты
         var insertedAmount = dto.InsertedCoins.Sum(c => c.Key * c.Value);
         if (insertedAmount < order.TotalAmount.Amount)
             throw new DomainException("Недостаточно средств для оплаты");
 
-        // Расчет сдачи
         var changeAmount = insertedAmount - order.TotalAmount.Amount;
         var changeCoins = new Dictionary<decimal, int>();
         
         if (changeAmount > 0)
         {
-            if (!await _coinRepository.IsCanMakeChangeAsync(changeAmount))
+            var coins = await _coinRepository.GetAllAsync();
+
+            if (!_changeCalculator.IsCanMakeChange(coins, changeAmount))
                 throw new DomainException("Автомат не может выдать сдачу");
 
-            changeCoins = await _coinRepository.CalculateChangeAsync(changeAmount);
+            changeCoins = _changeCalculator.CalculateChange(coins, changeAmount);
+
         }
 
-        // Обновление количества товаров
         foreach (var item in dto.Items)
         {
             var product = products.First(p => p.Id == item.ProductId);
@@ -75,13 +84,10 @@ public class OrderService : IOrderService
             await _productRepository.UpdateAsync(product);
         }
 
-        // Обновление монет
         await _coinRepository.ProcessPaymentAsync(dto.InsertedCoins.ToDictionary(kvp => kvp.Key, kvp => kvp.Value), changeCoins);
 
-        // Сохранение заказа
         await _orderRepository.AddAsync(order);
 
-        // Возврат результата
         var orderDto = await ConvertToOrderDto(order);
         
         return new OrderResultDto(
@@ -112,29 +118,27 @@ public class OrderService : IOrderService
         return order == null ? null : await ConvertToOrderDto(order);
     }
     
-    private async Task<OrderDto> ConvertToOrderDto(Order order)
+    private Task<OrderDto> ConvertToOrderDto(Order order)
     {
-        var products = await _productRepository.GetAllAsync();
-        var brands = await _brandRepository.GetAllAsync();
-        
-        var productDict = products.ToDictionary(p => p.Id, p => p.Name);
-        var brandDict = brands.ToDictionary(b => b.Id, b => b.Name);
-
         var items = order.Items.Select(item => new OrderItemDto(
             item.ProductId,
-            productDict.GetValueOrDefault(item.ProductId, "Unknown"),
+            item.ProductName,
             item.BrandId,
-            brandDict.GetValueOrDefault(item.BrandId, "Unknown"),
+            item.BrandName,
             item.Quantity,
             item.TotalPrice.Amount
         )).ToList();
 
-        return new OrderDto(
+        var orderDto = new OrderDto(
             order.Id,
             order.OrderDate,
             order.TotalAmount.Amount,
             order.TotalAmount.Currency,
             items
         );
+
+        return Task.FromResult(orderDto);
     }
+
+
 }

@@ -34,5 +34,9 @@ public class ProductConfiguration : IEntityTypeConfiguration<Product>
             
         builder.Property(p => p.BrandId)
             .IsRequired();
+        
+        builder.Property(p => p.ImageFileName)
+            .HasMaxLength(255)
+            .IsRequired(false);
     }
 }

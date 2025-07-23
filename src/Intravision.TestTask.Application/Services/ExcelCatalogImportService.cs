@@ -25,7 +25,6 @@ public class ExcelCatalogImportService
         var created = 0;
         var rowCount = worksheet.Dimension.Rows;
 
-        // Получаем список брендов для быстрого сопоставления по имени
         var brands = (await _brandRepository.GetAllAsync()).ToList();
         var brandDict = brands.ToDictionary(b => b.Name.Trim().ToLowerInvariant(), b => b);
 
@@ -36,6 +35,7 @@ public class ExcelCatalogImportService
             var priceRaw = worksheet.Cells[row, 3].Text?.Trim();
             var brandName = worksheet.Cells[row, 4].Text?.Trim().ToLowerInvariant();
             var stockRaw = worksheet.Cells[row, 5].Text?.Trim();
+            var imageFileName = worksheet.Cells[row, 6].Text?.Trim();
 
             if (string.IsNullOrWhiteSpace(name)
                 || string.IsNullOrWhiteSpace(priceRaw)
@@ -55,7 +55,7 @@ public class ExcelCatalogImportService
             if (!brandDict.TryGetValue(brandName, out var brand))
                 continue;
 
-            var product = new Product(name, description, new Money(price), brand.Id, stock);
+            var product = new Product(name, description, new Money(price), brand.Id, stock, imageFileName);
             await _productRepository.AddAsync(product);
             created++;
         }

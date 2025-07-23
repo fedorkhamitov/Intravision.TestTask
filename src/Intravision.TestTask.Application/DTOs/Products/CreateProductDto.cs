@@ -5,4 +5,5 @@ public record CreateProductDto(
     string Description,
     decimal Price,
     Guid BrandId,
-    int StockQuantity);
+    int StockQuantity,
+    string? ImageFileName = null);
